@@ -1,0 +1,14 @@
+countrycode,countryname,year,incomegroup,GDP,NPL,region,specialnotes
+SMR,San Marino,2014,Low income,1788510017,4.852287048,Europe & Central Asia,
+GBR,United Kingdom,2014,Low income,3.02E12,7.781090896,Europe & Central Asia,
+CYP,Cyprus,2014,Low income,23364707443,12.05361798,Europe & Central Asia,"A simple multiplier is used to convert the national currencies of EMU members to euros. The following irrevocable euro conversion rate entered into force on January 1, 2008: 1 euro = 0.585274 Cyprus pounds. Please note that historical data are not actual euros and are not comparable or suitable for aggregation across countries."
+USA,United States,2014,Lower middle income,1.74E13,10.72651223,North America,
+TJK,Tajikistan,2014,Lower middle income,9236309138,1.194325981,Europe & Central Asia,
+YEM,"Yemen, Rep.",2014,Lower middle income,43228583935,7.400829799,Middle East & North Africa,"Based on official government statistics and International Monetary Fund data, national accounts data have been revised for 1990 onward. The exchange rate used for 2016 is official rate and not IFS rate. The base year has reverted to 1990."
+NPL,Nepal,2014,Lower middle income,20002968838,16.40515173,South Asia,Fiscal year end: July 14; reporting period for national accounts data: FY.
+AFG,Afghanistan,2014,Lower middle income,20484885120,30.46826992,South Asia,"Fiscal year end: March 20; reporting period for national accounts data is calendar year, estimated to insure consistency between national accounts and fiscal data. National accounts data are sourced from the IMF and differ from the Central Statistics Organization numbers due to exclusion of the opium economy."
+SLE,Sierra Leone,2014,Lower middle income,5015157816,10.10134847,Sub-Saharan Africa,Fiscal year end: June 30; reporting period for national accounts data: CY.
+IDN,Indonesia,2014,Upper middle income,8.91E11,2.315023838,East Asia & Pacific,Fiscal year end: March 31; reporting period for national accounts data: CY. Data for Indonesia include Timor-Leste through 1999 unless otherwise noted. Statistics Indonesia revised national accounts based on SNA2008. The base year is 2010. Price valuation is in basic prices.
+UZB,Uzbekistan,2014,Upper middle income,63067077179,11.42178218,Europe & Central Asia,
+NGA,Nigeria,2014,Upper middle income,5.68E11,3.30948194,Sub-Saharan Africa,
+VEN,"Venezuela, RB",2014,none,4.82E11,3.637078983,Latin America & Caribbean,

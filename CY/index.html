@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+
+<style type="text/css">
+/* 13. Basic Styling with CSS */
+
+/* Style the lines by removing the fill and applying a stroke */
+.line {
+    fill: none;
+    stroke: steelblue;
+    stroke-width: 2;
+}
+  
+.overlay {
+  fill: none;
+  pointer-events: all;
+}
+/* Style the dots by assigning a fill and stroke */
+.dot {
+    fill: #ffab00;
+    stroke: #fff;
+}
+.focus circle {
+  fill: #F1F3F3;
+  stroke: #6F257F;
+  stroke-width: 5px;
+}
+  
+.hover-line {
+  stroke: #6F257F;
+  stroke-width: 2px;
+  stroke-dasharray: 3,3;
+}
+  
+.focus-text {
+	font: 10px sans-serif;  
+  }
+
+
+
+  .dropbtn {
+  background-color: #4CAF50;
+  color: white;
+  padding: 16px;
+  font-size: 16px;
+  border: none;
+}
+
+.dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+.dropdown-content {
+  display: none;
+  position: absolute;
+  background-color: #f1f1f1;
+  min-width: 160px;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  z-index: 1;
+}
+
+.dropdown-content a {
+  color: black;
+  padding: 12px 16px;
+  text-decoration: none;
+  display: block;
+}
+
+.dropdown-content a:hover {background-color: #ddd;}
+
+.dropdown:hover .dropdown-content {display: block;}
+
+.dropdown:hover .dropbtn {background-color: #3e8e41;}
+
+</style>
+<!-- Body tag is where we will append our SVG and SVG objects-->
+<body>
+        <div class="dropdown">
+                <button class="dropbtn">Countries</button>
+                <div class="dropdown-content" style: 1000 - left;>
+                  <a href=" ../CY/index.html">Cyprus</a>
+                  <a href=" ../SM/index.html">San Marino</a>
+                  <a href=" ../GREECE/index.html">Greece</a>
+                  <a href=" ../SIERRA/index.html">Sierra</a>
+                  <a href=" ../YEMEN/index.html">Yemen</a>
+                  <a href=" ../TJ/index.html">Tajikistan</a>
+                  <a href=" ../IRE/index.html">Ireland</a>
+                  <a href=" ../UKR/index.html">Ukrain</a>
+                  <a href=" ../ITA/index.html">Italy</a>
+                  <a href=" ../UZB/index.html">Uzbekestan</a>
+                  <a href=" ../AFGAN/index.html">Afganistan</a>
+                  <a href=" ../INDO/index.html">Indonasia</a>
+                  <a href=" ../CHILE/index.html">Chile</a>
+                  <a href=" ../NEPAL/index.html">Nepal</a>
+                  <a href=" ../VEN/index.html">Venezuela</a>
+                  <a href=" ../NIGERIA/index.html">Nigeria</a>
+                  <a href=" ../UK/index.html">UK</a>
+                  <a href=" ../USA/index.html">USA</a>
+                </div>
+        </div>
+        <div id="c1">   </div>
+        <br/>  <br/>  <br/>  <br/>  <br/> 
+        <div id="c2">   </div>
+</body>
+
+<!-- Load in the d3 library -->
+<script src="https://d3js.org/d3.v4.min.js"></script>
+
+<script>
+//**************************************************
+//Script 1
+// 2. Use the margin convention practice 
+var margin = {top: 100, right: 50, bottom: 50, left: 100}
+  , width = 900- margin.left - margin.right // Use the window's width 
+  , height = 600 - margin.top - margin.bottom; // Use the window's height
+
+// The number of datapoints
+var n = 21;
+var minDate;
+var maxDate;
+var minGDP;
+var maxGDP;
+var minNPL;
+var maxNPL;
+
+var parseTime = d3.timeParse("%Y");
+d3.csv("csv/CY.csv")
+.row(function(d) { return { year : parseTime(d.year), 
+                                    GDP : Number(d.GDP), 
+                                    NPL :Number(d.NPL),
+                                    COUNTRY : String(d.countryname)
+                                    }; 
+            })
+
+  .get(function(data){
+
+  //var purposes = ["abandoned", "casino", "government", "hospital", "hotel", "observation", "office", "religious", "residential", "retail", "telecommunications"];
+  
+         minDate = d3.min(data ,function(d) { return d.year;}) ;
+         maxDate = d3.max(data ,function(d) { return d.year;}) ;
+
+         maxGDP = d3.max(data,function(d) { return d.GDP;}) ;
+         maxNPL = d3.max(data,function(d) { return d.NPL ;}) ;
+
+         minGDP = d3.min(data,function(d) { return d.GDP;}) ;
+         minNPL = d3.min(data,function(d) { return d.NPL ;}) ;
+    console.log(data);
+
+//     var count = d3.nest().key(d => parseInt(d.GDP/10))
+//   .rollup(v => v.length)
+//   .entries(data);
+//     count.forEach(function(d) {
+//   d.key = parseTime(d.key*10); // put back as year
+//   d.value = +d.value;
+// });
+
+    // 5. X scale will use the index of our data
+// var xScale = d3.scaleLinear()
+//     .domain([0, n-1]) // input
+//     .range([0, width]); // output
+
+var xScale = d3.scaleTime()
+              .domain([minDate,maxDate])
+              .range([0, width])
+
+// 6. Y scale will use the randomly generate number 
+var yScale = d3.scaleLinear()
+yScale.domain([0, d3.max(data, function(d){ return d.GDP/1000000000;})])
+ // input 
+    .range([height, 0]); // output
+
+    // 7. d3's line generator
+var line = d3.line()
+    .x(function(d, i) { return xScale(d.year); }) // set the x values for the line generator
+    .y(function(d) { return yScale(d.GDP/1000000000); }) // set the y values for the line generator 
+    //.curve(d3.curveMonotoneX) // apply smoothing to the line
+
+    
+// 1. Add the SVG to the page and employ #2
+var svg = d3.select("#c1").append("svg")
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom)
+  .append("g")
+    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+// 3. Call the x axis in a group tag
+svg.append("g")
+    .attr("class", "x axis")
+    .attr("transform", "translate(0," + height + ")")
+    .call(d3.axisBottom(xScale)); // Create an axis component with d3.axisBottom
+
+// 4. Call the y axis in a group tag
+svg.append("g")
+    .attr("class", "y axis")
+    .call(d3.axisLeft(yScale)); // Create an axis component with d3.axisLeft
+
+// 9. Append the path, bind the data, and call the line generator 
+svg.append("path")
+    .datum(data) // 10. Binds data to the line 
+    .attr("class", "line") // Assign a class for styling 
+    .attr("d", line); // 11. Calls the line generator 
+
+// 12. Appends a circle for each datapoint 
+svg.selectAll(".dot")
+    .data(data)
+  .enter().append("circle") // Uses the enter().append() method
+    .attr("class", "dot") // Assign a class for styling
+    .attr("cx", function(d, i) { return xScale(d.year) })
+    .attr("cy", function(d) { return yScale(d.GDP/1000000000) })
+    .attr("r", 5);
+
+
+// Title 
+    svg.append("text")
+        .data(data)
+        .attr("transform", "translate(" + width/2 + "," + -60 + ")")
+        .style("text-anchor", "middle")
+        .attr("font-family", "Chivo")
+        .attr("font-size", "25px")
+        //.text("Gross Domestic Product (GDP)")
+        .text(function(d) { return	("Gross Domestic Product (GDP) " + d.COUNTRY) });
+
+//X axis s
+        svg.append("text")
+        .attr("transform", "translate(" + width/2 + "," + (height+40) + ")")
+        .style("text-anchor", "middle")
+        .attr("font-family", "Chivo")
+        .attr("font-size", "20px")
+        //.attr("font-weight", "bold")
+        .text("Year");
+
+
+
+        //Y axis Text
+     svg.append("text")
+	   .attr("transform", "rotate(-90)")
+      .attr("y",  20-margin.left)
+      .attr("x",0 - (height / 2))
+      .attr("dy", "1em")
+      .style("text-anchor", "middle")
+      .attr("font-family", "Chivo")
+      //.attr("font-weight", "bold")
+      .attr("font-size", "20px")
+      .text("GDP in Billion ($) ");
+
+
+
+      var focus = svg.append("g")
+        .attr("class", "focus")
+        .style("display", "none");
+    focus.append("line")
+        .attr("class", "x-hover-line hover-line")
+        .attr("y1", 0)
+        .attr("y2", height);
+    focus.append("line")
+        .attr("class", "y-hover-line hover-line")
+        .attr("x1", width)
+        .attr("x2", width);
+    focus.append("circle")
+        .attr("r", 7.5);
+    focus.append("text")
+        .attr("x", -80)
+    		.attr ("y", -80)
+    		.attr("class", "focus-text")
+      	.attr("dy", ".31em");
+    svg.append("rect")
+        .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
+        .attr("class", "overlay")
+        .attr("width", width)
+        .attr("height", height)
+        .on("mouseover", function() { focus.style("display", null); })
+        .on("mouseout", function() { focus.style("display", "none"); })
+        .on("mousemove", mousemove);
+    function mousemove() {
+      var x0 = xScale.invert(d3.mouse(this)[0]),
+          i = bisectDate(data, x0, 1),
+          d0 = data[i - 1],
+          d1 = data[i],
+          d = x0 - d0.year > d1.year - x0 ? d1 : d0;
+      focus.attr("transform", "translate(" + xScale(d.year) + "," + yScale(d.GDP/1000000000) + ")");
+      focus.select("text").text(function() { return	"GDP in Billion: $ " + d.GDP/1000000000});
+      focus.select(".x-hover-line").attr("y2", height - yScale(d.GDP/1000000000));
+      focus.select(".y-hover-line").attr("x2", width + width);
+    }
+    bisectDate = d3.bisector(function(d) { return d.year; }).left;
+
+
+
+
+});
+
+ 
+
+
+// 8. An array of objects of length N. Each object has key -> value pair, the key being "y" and the value is a random number
+//var dataset = d3.range(n).map(function(d) { return {"y": d3.randomUniform(1)() } })
+
+
+</script>
+
+<script>
+//**************************************************
+//Script 2
+        // 2. Use the margin convention practice 
+        var margin = {top: 100, right: 50, bottom: 50, left: 100}
+          , width = 900- margin.left - margin.right // Use the window's width 
+          , height = 600 - margin.top - margin.bottom; // Use the window's height
+        
+        // The number of datapoints
+        var n = 21;
+        var minDate;
+        var maxDate;
+        var minGDP;
+        var maxGDP;
+        var minNPL;
+        var maxNPL;
+        
+        var parseTime = d3.timeParse("%Y");
+        d3.csv("csv/CY.csv")
+        .row(function(d) { return { year : parseTime(d.year), 
+                                            GDP : Number(d.GDP), 
+                                            NPL : Number(d.NPL),
+                                            COUNTRY : String(d.countryname)
+                                            }; 
+                    })
+       
+          .get(function(data){
+        
+          //var purposes = ["abandoned", "casino", "government", "hospital", "hotel", "observation", "office", "religious", "residential", "retail", "telecommunications"];
+        //   console.log("*********");
+        //   console.log(d.COUNTRY);
+
+                 minDate = d3.min(data ,function(d) { return d.year;}) ;
+                 maxDate = d3.max(data ,function(d) { return d.year;}) ;
+        
+                 maxGDP = d3.max(data,function(d) { return d.GDP;}) ;
+                 maxNPL = d3.max(data,function(d) { return d.NPL ;}) ;
+        
+                 minGDP = d3.min(data,function(d) { return d.GDP;}) ;
+                 minNPL = d3.min(data,function(d) { return d.NPL ;}) ;
+            console.log(data);
+        
+        //     var count = d3.nest().key(d => parseInt(d.GDP/10))
+        //   .rollup(v => v.length)
+        //   .entries(data);
+        //     count.forEach(function(d) {
+        //   d.key = parseTime(d.key*10); // put back as year
+        //   d.value = +d.value;
+        // });
+        
+            // 5. X scale will use the index of our data
+        // var xScale = d3.scaleLinear()
+        //     .domain([0, n-1]) // input
+        //     .range([0, width]); // output
+        
+        var xScale = d3.scaleTime()
+                      .domain([minDate,maxDate])
+                      .range([0, width])
+        
+        // 6. Y scale will use the randomly generate number 
+        var yScale = d3.scaleLinear()
+        yScale.domain([0, d3.max(data, function(d){ return d.NPL;})])
+         // input 
+            .range([height, 0]); // output
+        
+            // 7. d3's line generator
+        var line = d3.line()
+            .x(function(d, i) { return xScale(d.year); }) // set the x values for the line generator
+            .y(function(d) { return yScale(d.NPL); }) // set the y values for the line generator 
+            //.curve(d3.curveMonotoneX) // apply smoothing to the line
+        
+            
+        // 1. Add the SVG to the page and employ #2
+        var svg = d3.select("#c2").append("svg")
+            .attr("width", width + margin.left + margin.right)
+            .attr("height", height + margin.top + margin.bottom)
+          .append("g")
+            .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+        
+        // 3. Call the x axis in a group tag
+        svg.append("g")
+            .attr("class", "x axis")
+            .attr("transform", "translate(0," + height + ")")
+            .call(d3.axisBottom(xScale)); // Create an axis component with d3.axisBottom
+        
+        // 4. Call the y axis in a group tag
+        svg.append("g")
+            .attr("class", "y axis")
+            .call(d3.axisLeft(yScale)); // Create an axis component with d3.axisLeft
+        
+        // 9. Append the path, bind the data, and call the line generator 
+        svg.append("path")
+            .datum(data) // 10. Binds data to the line 
+            .attr("class", "line") // Assign a class for styling 
+            .attr("d", line); // 11. Calls the line generator 
+        
+        // 12. Appends a circle for each datapoint 
+        svg.selectAll(".dot")
+            .data(data)
+          .enter().append("circle") // Uses the enter().append() method
+            .attr("class", "dot") // Assign a class for styling
+            .attr("cx", function(d, i) { return xScale(d.year) })
+            .attr("cy", function(d) { return yScale(d.NPL) })
+            .attr("r", 5);
+        
+        
+        
+            // Title 
+            svg.append("text")
+                .data(data)
+                .attr("transform", "translate(" + width/2 + "," + -60 + ")")
+                .style("text-anchor", "middle")
+                .attr("font-family", "Chivo")
+                .attr("font-size", "25px")
+                //.text("Non Performing Loan (NPL)");
+                .text(function(d) { return	("Non Performing Loan (NPL) " + d.COUNTRY) });
+        
+        //X axis 
+                svg.append("text")
+                .attr("transform", "translate(" + width/2 + "," + (height+40) + ")")
+                .style("text-anchor", "middle")
+                .attr("font-family", "Chivo")
+                .attr("font-size", "20px")
+                //.attr("font-weight", "bold")
+                .text("Year");
+        
+        
+        
+                //Y axis Text
+             svg.append("text")
+               .attr("transform", "rotate(-90)")
+              .attr("y",  20-margin.left)
+              .attr("x",0 - (height / 2))
+              .attr("dy", "1em")
+              .style("text-anchor", "middle")
+              .attr("font-family", "Chivo")
+              //.attr("font-weight", "bold")
+              .attr("font-size", "20px")
+              .text("Non Performing Loan ( % ) ");
+
+
+
+
+
+      var focus = svg.append("g")
+        .attr("class", "focus")
+        .style("display", "none");
+    focus.append("line")
+        .attr("class", "x-hover-line hover-line")
+        .attr("y1", 0)
+        .attr("y2", height);
+    focus.append("line")
+        .attr("class", "y-hover-line hover-line")
+        .attr("x1", width)
+        .attr("x2", width);
+    focus.append("circle")
+        .attr("r", 7.5);
+    focus.append("text")
+        .attr("x", -80)
+    		.attr ("y", -80)
+    		.attr("class", "focus-text")
+      	.attr("dy", ".31em");
+    svg.append("rect")
+        .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
+        .attr("class", "overlay")
+        .attr("width", width)
+        .attr("height", height)
+        .on("mouseover", function() { focus.style("display", null); })
+        .on("mouseout", function() { focus.style("display", "none"); })
+        .on("mousemove", mousemove);
+    function mousemove() {
+      var x0 = xScale.invert(d3.mouse(this)[0]),
+          i = bisectDate(data, x0, 1),
+          d0 = data[i - 1],
+          d1 = data[i],
+          d = x0 - d0.year > d1.year - x0 ? d1 : d0;
+      focus.attr("transform", "translate(" + xScale(d.year) + "," + yScale(d.NPL) + ")");
+      focus.select("text").text(function() { return	"GDP in Billion: $ " + d.GDP/1000000000});
+      focus.select(".x-hover-line").attr("y2", height - yScale(d.NPL));
+      focus.select(".y-hover-line").attr("x2", width + width);
+    }
+    bisectDate = d3.bisector(function(d) { return d.year; }).left;
+
+
+        
+        });
+        
+         
+        
+        
+        // 8. An array of objects of length N. Each object has key -> value pair, the key being "y" and the value is a random number
+        //var dataset = d3.range(n).map(function(d) { return {"y": d3.randomUniform(1)() } })
+        
+        
+        </script>
